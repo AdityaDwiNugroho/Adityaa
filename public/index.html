@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Dwi Nugroho ⚡ Full Stack Developer</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+    <div class="bg-animation"></div>
+    <div class="scroll-progress"></div>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="pixel-text">ADN.exe</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero-editorial">
+        <div class="hero-grid">
+            <div class="hero-text-block">
+                <div class="label-tag">FULL STACK DEVELOPER</div>
+                <h1 class="hero-title">
+                    ADITYA<br/>
+                    DWI<br/>
+                    NUGROHO
+                </h1>
+                <div class="hero-meta">
+                    <span class="meta-item">Go Specialist</span>
+                    <span class="meta-divider">/</span>
+                    <span class="meta-item">Backend Architect</span>
+                    <span class="meta-divider">/</span>
+                    <span class="meta-item">System Builder</span>
+                </div>
+            </div>
+
+            <div class="hero-image-block">
+                <div class="image-container">
+                    <img src="/profile.jpg" alt="Aditya Dwi Nugroho" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display: none;">
+                        <div class="placeholder-text">
+                            <span class="placeholder-icon">[IMG]</span>
+                            <span class="placeholder-label">Your Photo Here</span>
+                            <span class="placeholder-hint">1:1 ratio recommended</span>
+                        </div>
+                    </div>
+                    <div class="image-overlay">
+                        <div class="overlay-label">ADN</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="floating-stat stat-1">
+                <div class="stat-number">3+</div>
+                <div class="stat-label">Years Exp</div>
+            </div>
+            
+            <div class="floating-stat stat-2" hx-get="/api/visitor" hx-trigger="load" hx-swap="innerHTML">
+                <div class="stat-number">---</div>
+                <div class="stat-label">Visitors</div>
+            </div>
+
+            <div class="hero-actions">
+                <a href="#projects" class="btn btn-primary">View Work</a>
+                <a href="#contact" class="btn btn-secondary">Contact</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section-editorial">
+        <div class="editorial-layout">
+            <div class="section-header offset-left">
+                <div class="section-number">01</div>
+                <h2 class="section-title-editorial">About</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="about-editorial-grid">
+                <div class="statement-block">
+                    <p class="statement-text">
+                        Building robust systems and elegant solutions. 
+                        Specialized in <strong>Go backend architecture</strong>, 
+                        but equally passionate about creating seamless full-stack experiences.
+                    </p>
+                </div>
+
+                <div class="info-cards">
+                    <div class="info-card card-offset-1">
+                        <div class="card-label">Expertise</div>
+                        <div class="card-content">
+                            Backend Development, System Architecture, 
+                            API Design, Performance Optimization
+                        </div>
+                    </div>
+
+                    <div class="info-card card-offset-2">
+                        <div class="card-label">Philosophy</div>
+                        <div class="card-content">
+                            Clean code. Scalable systems. 
+                            User experience first. Always improving.
+                        </div>
+                    </div>
+
+                    <div class="info-card card-offset-3">
+                        <div class="card-label">Currently</div>
+                        <div class="card-content">
+                            Building serverless applications, 
+                            exploring distributed systems, contributing to OSS
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="section-split">
+        <div class="split-container">
+            <div class="split-left">
+                <div class="section-number">02</div>
+                <h2 class="section-title-editorial">Tech<br/>Stack</h2>
+                <p class="section-description">
+                    Technologies and tools I work with to build scalable, performant systems.
+                </p>
+            </div>
+
+            <div class="split-right">
+                <div class="skills-editorial">
+                    <div class="skill-group">
+                        <div class="skill-group-title">Backend</div>
+                        <div class="skill-list">
+                            <span class="skill-item">Go</span>
+                            <span class="skill-item">Python</span>
+                            <span class="skill-item">Node.js</span>
+                            <span class="skill-item">PostgreSQL</span>
+                            <span class="skill-item">MongoDB</span>
+                            <span class="skill-item">Redis</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-group">
+                        <div class="skill-group-title">Frontend</div>
+                        <div class="skill-list">
+                            <span class="skill-item">HTMX</span>
+                            <span class="skill-item">Alpine.js</span>
+                            <span class="skill-item">Tailwind CSS</span>
+                            <span class="skill-item">HTML5</span>
+                            <span class="skill-item">CSS3</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-group">
+                        <div class="skill-group-title">DevOps & Tools</div>
+                        <div class="skill-list">
+                            <span class="skill-item">Docker</span>
+                            <span class="skill-item">Git</span>
+                            <span class="skill-item">Linux</span>
+                            <span class="skill-item">CI/CD</span>
+                            <span class="skill-item">Vercel</span>
+                            <span class="skill-item">AWS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-bracket">[</span>
+                Featured Projects
+                <span class="title-bracket">]</span>
+            </h2>
+
+            <div class="projects-grid">
+                <div class="project-card glass" hx-get="/api/projects" hx-trigger="revealed" hx-swap="innerHTML">
+                    <div class="loading-state">
+                        <span class="loading-dots">Loading projects...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-bracket">[</span>
+                Get In Touch
+                <span class="title-bracket">]</span>
+            </h2>
+
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h3>Let's Work Together!</h3>
+                    <p>Interested in collaboration atau punya project idea? Hit me up!</p>
+                    
+                    <div class="social-links">
+                        <a href="https://github.com/AdityaDwiNugroho" class="social-link" target="_blank">
+                            <span class="link-icon">→</span> GitHub
+                        </a>
+                        <a href="https://www.linkedin.com/in/aditya-dwi-nugroho-75057827a/" class="social-link" target="_blank">
+                            <span class="link-icon">→</span> LinkedIn
+                        </a>
+                        <a href="mailto:a.dwi.nugroho1000@gmail.com" class="social-link">
+                            <span class="link-icon">→</span> Email
+                        </a>
+                    </div>
+                </div>
+
+                <form class="contact-form glass" hx-post="/api/contact" hx-target="#form-response" hx-swap="innerHTML">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Your name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="your@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" required placeholder="Your message..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span>Send Message</span>
+                    </button>
+
+                    <div id="form-response" class="form-response"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Aditya Dwi Nugroho. Built with Go + HTMX</p>
+            <p class="footer-tagline">No JavaScript frameworks were harmed in the making of this portfolio [OK]</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Scroll progress bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.querySelector('.scroll-progress').style.width = scrolled + '%';
+        });
+
+        // Add active state to nav links
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Custom Cursor
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorRing = document.querySelector('.cursor-ring');
+        
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+        
+        // Update mouse position
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Update dot immediately
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+        });
+        
+        // Smooth ring animation
+        function animateRing() {
+            // Lerp (linear interpolation) for smooth follow
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            
+            cursorRing.style.left = ringX + 'px';
+            cursorRing.style.top = ringY + 'px';
+            
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+        
+        // Expand cursor on hover
+        const hoverElements = document.querySelectorAll('a, button, .btn, .skill-item, .project-card, .info-card');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorRing.style.width = '60px';
+                cursorRing.style.height = '60px';
+                cursorRing.style.borderColor = 'var(--primary)';
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                cursorRing.style.width = '40px';
+                cursorRing.style.height = '40px';
+                cursorRing.style.borderColor = 'var(--accent)';
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        });
+        
+        // Click animation
+        document.addEventListener('mousedown', () => {
+            cursorRing.style.width = '30px';
+            cursorRing.style.height = '30px';
+            cursorDot.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        });
+        
+        document.addEventListener('mouseup', () => {
+            cursorRing.style.width = '40px';
+            cursorRing.style.height = '40px';
+            cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+        });
+    </script>
+</body>
+</html>
