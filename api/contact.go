@@ -1,4 +1,4 @@
-package handler
+package api
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ type ContactForm struct {
 	Message string `json:"message"`
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func Contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/html")
 	

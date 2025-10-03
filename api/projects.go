@@ -1,4 +1,4 @@
-package handler
+package api
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ type Project struct {
 	Status      string   `json:"status"`
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func Projects(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/html")
 	

@@ -1,4 +1,4 @@
-package handler
+package api
 
 import (
 	"fmt"
@@ -6,10 +6,9 @@ import (
 	"sync/atomic"
 )
 
-// Simple in-memory counter (will reset on redeploy, use Redis/DB for production)
 var visitorCount uint64
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func Visitor(w http.ResponseWriter, r *http.Request) {
 	// Increment visitor count
 	count := atomic.AddUint64(&visitorCount, 1)
 	
