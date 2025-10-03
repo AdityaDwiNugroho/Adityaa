@@ -14,8 +14,7 @@ type ContactForm struct {
 	Message string `json:"message"`
 }
 
-func ContactHandler(w http.ResponseWriter, r *http.Request) {
-	// Set CORS headers
+func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/html")
 	

@@ -13,7 +13,7 @@ type Project struct {
 	Status      string   `json:"status"`
 }
 
-func ProjectsHandler(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/html")
 	
