@@ -52,6 +52,49 @@
                     </form>
                 </div>
 
+                <!-- New Entry Form (shown after login) -->
+                <div id="new-entry-section" style="display: none; max-width: 800px; margin: 40px auto;">
+                    <div style="text-align: right; margin-bottom: 20px;">
+                        <button onclick="toggleNewEntryForm()" id="toggle-form-btn" class="btn btn-primary">+ New Entry</button>
+                    </div>
+                    
+                    <div id="new-entry-form" class="glass" style="display: none; padding: 40px; margin-bottom: 40px;">
+                        <h3 style="font-family: 'Press Start 2P', cursive; font-size: 1em; color: var(--accent); margin-bottom: 30px;">Create New Entry</h3>
+                        <form onsubmit="addEntry(event)" style="display: flex; flex-direction: column; gap: 20px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: var(--accent);">Title</label>
+                                <input 
+                                    type="text" 
+                                    id="entry-title" 
+                                    required
+                                    placeholder="Entry title..."
+                                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text); font-family: 'Space Mono', monospace; font-size: 1em;"
+                                />
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: bold; color: var(--accent);">Content</label>
+                                <textarea 
+                                    id="entry-content" 
+                                    rows="10" 
+                                    required
+                                    placeholder="Write your thoughts..."
+                                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text); font-family: 'Space Mono', monospace; font-size: 1em; line-height: 1.8; resize: vertical;"
+                                ></textarea>
+                            </div>
+                            <div>
+                                <label style="display: flex; align-items: center; gap: 10px; color: var(--text); cursor: pointer;">
+                                    <input type="checkbox" id="entry-private" style="width: 20px; height: 20px; cursor: pointer;">
+                                    <span>Make this entry private</span>
+                                </label>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="submit" class="btn btn-primary">Save Entry</button>
+                                <button type="button" onclick="toggleNewEntryForm()" class="btn btn-secondary">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Entries Container (always visible) -->
                 <div id="entries-container"></div>
 
@@ -77,6 +120,7 @@
             loadEntries();
             if (isAuthenticated) {
                 document.getElementById('login-section').style.display = 'none';
+                document.getElementById('new-entry-section').style.display = 'block';
             }
         });
 
@@ -102,6 +146,7 @@
                     isAuthenticated = true;
                     sessionStorage.setItem('diaryAuth', 'true');
                     document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('new-entry-section').style.display = 'block';
                     error.style.display = 'none';
                     loadEntries(); // Reload to show uncensored content
                 } else {
@@ -118,6 +163,70 @@
             button.textContent = 'Unlock Private Entries';
         }
 
+        function toggleNewEntryForm() {
+            const form = document.getElementById('new-entry-form');
+            const btn = document.getElementById('toggle-form-btn');
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+                btn.textContent = 'Cancel';
+                document.getElementById('entry-title').focus();
+            } else {
+                form.style.display = 'none';
+                btn.textContent = '+ New Entry';
+                document.getElementById('entry-title').value = '';
+                document.getElementById('entry-content').value = '';
+                document.getElementById('entry-private').checked = false;
+            }
+        }
+
+        async function addEntry(e) {
+            e.preventDefault();
+            const title = document.getElementById('entry-title').value;
+            const content = document.getElementById('entry-content').value;
+            const isPrivate = document.getElementById('entry-private').checked;
+            const button = e.target.querySelector('button[type="submit"]');
+            
+            button.disabled = true;
+            button.textContent = 'Saving...';
+            
+            try {
+                const response = await fetch('/api/diary-entries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer true'
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        content: content,
+                        isPrivate: isPrivate
+                    })
+                });
+                
+                if (response.ok) {
+                    // Clear form
+                    document.getElementById('entry-title').value = '';
+                    document.getElementById('entry-content').value = '';
+                    document.getElementById('entry-private').checked = false;
+                    toggleNewEntryForm();
+                    
+                    // Reload entries from server
+                    await loadEntries();
+                } else {
+                    alert('Failed to save entry. Please try again.');
+                }
+            } catch (err) {
+                console.error('Error saving entry:', err);
+                alert('Connection error. Please try again.');
+            }
+            
+            button.disabled = false;
+            button.textContent = 'Save Entry';
+            
+            toggleNewEntryForm();
+            loadEntries();
+        }
+
         async function loadEntries() {
             const container = document.getElementById('entries-container');
             
@@ -128,7 +237,14 @@
                 }
 
                 const response = await fetch('/api/diary-entries', { headers });
-                const entries = await response.json();
+                let entries = await response.json();
+                
+                // Merge with localStorage entries
+                const localEntries = JSON.parse(localStorage.getItem('diaryEntries') || '[]');
+                entries = [...localEntries, ...entries];
+                
+                // Sort by date (newest first)
+                entries.sort((a, b) => new Date(b.date) - new Date(a.date));
                 
                 container.innerHTML = entries.map(entry => {
                     const date = new Date(entry.date);
@@ -143,7 +259,7 @@
                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
                                 <div>
                                     <div style="font-family: 'Press Start 2P', cursive; font-size: 0.7em; color: var(--accent); margin-bottom: 10px;">
-                                        Entry ${entryNum} ${isPrivate ? '🔒' : ''}
+                                        Entry ${entryNum} ${isPrivate ? '[Private]' : ''}
                                     </div>
                                     <h3 style="font-size: 1.5em; color: var(--text);">${entry.title}</h3>
                                 </div>
