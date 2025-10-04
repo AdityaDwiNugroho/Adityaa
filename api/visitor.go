@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
 )
 
 func Visitor(w http.ResponseWriter, r *http.Request) {
