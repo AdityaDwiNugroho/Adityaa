@@ -37,28 +37,31 @@
             </div>
 
             <div id="diary-content">
-                <!-- Login Form -->
-                <div id="login-section" class="glass" style="max-width: 500px; margin: 60px auto; padding: 40px;">
-                    <h3 style="font-family: 'Press Start 2P', cursive; font-size: 1em; color: var(--accent); margin-bottom: 20px;">Login to view private entries</h3>
-                    <form onsubmit="checkPassword(event)" style="display: flex; flex-direction: column; gap: 20px;">
-                        <input 
-                            type="password" 
-                            id="diary-password" 
-                            placeholder="••••••••"
-                            style="padding: 15px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text); font-family: 'Space Mono', monospace; font-size: 1em;"
-                        />
-                        <button type="submit" class="btn btn-primary">Unlock Private Entries</button>
-                        <p id="error-msg" style="color: #ff0000; font-size: 0.85em; display: none; text-align: center;">Incorrect password</p>
-                    </form>
+                <!-- Top Bar: Login + New Entry Button -->
+                <div style="max-width: 1200px; margin: 0 auto 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                    <!-- Login Form (compact) -->
+                    <div id="login-section" style="flex: 0 0 auto;">
+                        <form onsubmit="checkPassword(event)" style="display: flex; align-items: center; gap: 10px;">
+                            <input 
+                                type="password" 
+                                id="diary-password" 
+                                placeholder="Password"
+                                style="padding: 10px 15px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text); font-family: 'Space Mono', monospace; font-size: 0.9em; width: 160px;"
+                            />
+                            <button type="submit" class="btn btn-secondary" style="padding: 10px 20px; font-size: 0.85em;">Unlock</button>
+                        </form>
+                        <p id="error-msg" style="color: #ff6b6b; font-size: 0.75em; margin-top: 5px; display: none;">Incorrect password</p>
+                    </div>
+
+                    <!-- New Entry Button -->
+                    <div id="new-entry-section" style="display: none;">
+                        <button onclick="toggleNewEntryForm()" id="toggle-form-btn" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.9em;">+ New Entry</button>
+                    </div>
                 </div>
 
-                <!-- New Entry Form (shown after login) -->
-                <div id="new-entry-section" style="display: none; max-width: 800px; margin: 40px auto;">
-                    <div style="text-align: right; margin-bottom: 20px;">
-                        <button onclick="toggleNewEntryForm()" id="toggle-form-btn" class="btn btn-primary">+ New Entry</button>
-                    </div>
-                    
-                    <div id="new-entry-form" class="glass" style="display: none; padding: 40px; margin-bottom: 40px;">
+                <!-- New Entry Form -->
+                <div id="new-entry-form-container" style="max-width: 800px; margin: 0 auto 40px;">
+                    <div id="new-entry-form" class="glass" style="display: none; padding: 40px;">
                         <h3 style="font-family: 'Press Start 2P', cursive; font-size: 1em; color: var(--accent); margin-bottom: 30px;">Create New Entry</h3>
                         <form onsubmit="addEntry(event)" style="display: flex; flex-direction: column; gap: 20px;">
                             <div>
@@ -96,7 +99,7 @@
                 </div>
 
                 <!-- Entries Container (always visible) -->
-                <div id="entries-container"></div>
+                <div id="entries-container" style="max-width: 1200px; margin: 0 auto;"></div>
 
                 <div style="text-align: center; padding: 60px 20px; color: var(--text-muted); font-style: italic;">
                     End of entries
@@ -257,13 +260,13 @@
                     return `
                         <article class="glass" style="margin-bottom: 40px; padding: 40px; ${isCensored ? 'opacity: 0.7; border: 1px solid var(--accent);' : ''}">
                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-                                <div>
+                                <div style="flex: 1; min-width: 200px;">
                                     <div style="font-family: 'Press Start 2P', cursive; font-size: 0.7em; color: var(--accent); margin-bottom: 10px;">
                                         Entry ${entryNum} ${isPrivate ? '[Private]' : ''}
                                     </div>
                                     <h3 style="font-size: 1.5em; color: var(--text);">${entry.title}</h3>
                                 </div>
-                                <div style="color: var(--text-muted); font-size: 0.9em;">
+                                <div style="color: var(--text-muted); font-size: 0.9em; text-align: right;">
                                     <div>${formattedDate}</div>
                                     <div style="font-size: 0.85em; margin-top: 5px;">${formattedTime}</div>
                                 </div>
