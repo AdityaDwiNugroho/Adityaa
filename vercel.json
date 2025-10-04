@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/diary",
+      "destination": "/public/diary.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/public/$1"
     }
