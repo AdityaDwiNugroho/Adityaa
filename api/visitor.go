@@ -1,22 +1,36 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net/http"
-	"sync/atomic"
+	"os"
+	"strconv"
+
+	"github.com/redis/go-redis/v9"
 )
 
-var visitorCount uint64
+var ctx = context.Background()
+
+func getRedisClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("KV_REST_API_URL"),
+		Password: os.Getenv("KV_REST_API_TOKEN"),
+	})
+}
 
 func Visitor(w http.ResponseWriter, r *http.Request) {
-	// Increment visitor count
-	count := atomic.AddUint64(&visitorCount, 1)
-	
-	// Set CORS headers
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/html")
 	
-	// Return HTML fragment for HTMX (for floating stat)
+	rdb := getRedisClient()
+	defer rdb.Close()
+	
+	count, err := rdb.Incr(ctx, "visitor_count").Result()
+	if err != nil {
+		count = 1
+	}
+	
 	response := fmt.Sprintf(`
 		<div class="stat-number">%d</div>
 		<div class="stat-label">Visitors</div>
