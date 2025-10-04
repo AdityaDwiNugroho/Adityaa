@@ -38,56 +38,25 @@
 
             <div id="diary-content">
                 <!-- Login Form -->
-                <div id="login-form" class="glass" style="max-width: 500px; margin: 60px auto; padding: 40px;">
-                    <h3 style="font-family: 'Press Start 2P', cursive; font-size: 1em; color: var(--accent); margin-bottom: 30px;">Enter Password</h3>
+                <div id="login-section" class="glass" style="max-width: 500px; margin: 60px auto; padding: 40px;">
+                    <h3 style="font-family: 'Press Start 2P', cursive; font-size: 1em; color: var(--accent); margin-bottom: 20px;">Login to view private entries</h3>
                     <form onsubmit="checkPassword(event)" style="display: flex; flex-direction: column; gap: 20px;">
                         <input 
                             type="password" 
                             id="diary-password" 
                             placeholder="••••••••"
                             style="padding: 15px; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text); font-family: 'Space Mono', monospace; font-size: 1em;"
-                            autofocus
                         />
-                        <button type="submit" class="btn btn-primary">Unlock Diary</button>
+                        <button type="submit" class="btn btn-primary">Unlock Private Entries</button>
                         <p id="error-msg" style="color: #ff0000; font-size: 0.85em; display: none; text-align: center;">Incorrect password</p>
                     </form>
                 </div>
 
-                <!-- Diary Entries (hidden until logged in) -->
-                <div id="diary-entries" style="display: none;">
-                    <div style="text-align: right; margin-bottom: 40px;">
-                        <button onclick="logout()" class="btn btn-secondary" style="padding: 10px 20px; font-size: 0.85em;">Logout</button>
-                    </div>
+                <!-- Entries Container (always visible) -->
+                <div id="entries-container"></div>
 
-                    <!-- Entry 1 -->
-                    <article class="glass" style="margin-bottom: 40px; padding: 40px;">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-                            <div>
-                                <div style="font-family: 'Press Start 2P', cursive; font-size: 0.7em; color: var(--accent); margin-bottom: 10px;">Entry 001</div>
-                                <h3 style="font-size: 1.5em; color: var(--text);">Starting Fresh</h3>
-                            </div>
-                            <div style="color: var(--text-muted); font-size: 0.9em;">
-                                <div>Oct 4, 2025</div>
-                                <div style="font-size: 0.85em; margin-top: 5px;">23:47</div>
-                            </div>
-                        </div>
-                        <div style="color: var(--text-muted); line-height: 1.8; font-size: 1em;">
-                            <p style="margin-bottom: 15px;">
-                                Built this portfolio from scratch today. Go + HTMX, no frameworks. Feels good to keep things simple.
-                            </p>
-                            <p style="margin-bottom: 15px;">
-                                The old money aesthetic just clicked. Not flashy, just solid. Like good code should be.
-                            </p>
-                            <p>
-                                Next up: more projects, maybe write about Rust learnings.
-                            </p>
-                        </div>
-                    </article>
-
-                    <!-- Add more entries here -->
-                    <div style="text-align: center; padding: 60px 20px; color: var(--text-muted); font-style: italic;">
-                        More entries to come...
-                    </div>
+                <div style="text-align: center; padding: 60px 20px; color: var(--text-muted); font-style: italic;">
+                    End of entries
                 </div>
             </div>
         </div>
@@ -100,6 +69,17 @@
     </footer>
 
     <script>
+        // Authentication state
+        let isAuthenticated = sessionStorage.getItem('diaryAuth') === 'true';
+
+        // Load entries on page load
+        window.addEventListener('load', () => {
+            loadEntries();
+            if (isAuthenticated) {
+                document.getElementById('login-section').style.display = 'none';
+            }
+        });
+
         async function checkPassword(e) {
             e.preventDefault();
             const input = document.getElementById('diary-password');
@@ -119,10 +99,11 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    document.getElementById('login-form').style.display = 'none';
-                    document.getElementById('diary-entries').style.display = 'block';
+                    isAuthenticated = true;
                     sessionStorage.setItem('diaryAuth', 'true');
+                    document.getElementById('login-section').style.display = 'none';
                     error.style.display = 'none';
+                    loadEntries(); // Reload to show uncensored content
                 } else {
                     error.style.display = 'block';
                     input.value = '';
@@ -134,23 +115,64 @@
             }
             
             button.disabled = false;
-            button.textContent = 'Unlock Diary';
+            button.textContent = 'Unlock Private Entries';
         }
 
-        function logout() {
-            sessionStorage.removeItem('diaryAuth');
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('diary-entries').style.display = 'none';
-            document.getElementById('diary-password').value = '';
-        }
+        async function loadEntries() {
+            const container = document.getElementById('entries-container');
+            
+            try {
+                const headers = {};
+                if (isAuthenticated) {
+                    headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('diaryAuth');
+                }
 
-        // Check if already logged in
-        window.addEventListener('load', () => {
-            if (sessionStorage.getItem('diaryAuth') === 'true') {
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('diary-entries').style.display = 'block';
+                const response = await fetch('/api/diary-entries', { headers });
+                const entries = await response.json();
+                
+                container.innerHTML = entries.map(entry => {
+                    const date = new Date(entry.date);
+                    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    const isPrivate = entry.isPrivate;
+                    const isCensored = isPrivate && !isAuthenticated;
+                    const entryNum = String(entry.id).padStart(3, '0');
+                    
+                    return `
+                        <article class="glass" style="margin-bottom: 40px; padding: 40px; ${isCensored ? 'opacity: 0.7; border: 1px solid var(--accent);' : ''}">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                                <div>
+                                    <div style="font-family: 'Press Start 2P', cursive; font-size: 0.7em; color: var(--accent); margin-bottom: 10px;">
+                                        Entry ${entryNum} ${isPrivate ? '🔒' : ''}
+                                    </div>
+                                    <h3 style="font-size: 1.5em; color: var(--text);">${entry.title}</h3>
+                                </div>
+                                <div style="color: var(--text-muted); font-size: 0.9em;">
+                                    <div>${formattedDate}</div>
+                                    <div style="font-size: 0.85em; margin-top: 5px;">${formattedTime}</div>
+                                </div>
+                            </div>
+                            <div style="color: var(--text-muted); line-height: 1.8; font-size: 1em;">
+                                ${isCensored 
+                                    ? `<p style="font-style: italic; text-align: center; padding: 40px 20px; color: var(--accent);">${entry.content}</p>
+                                       <div style="text-align: center; margin-top: 20px;">
+                                         <button onclick="document.getElementById('diary-password').focus()" 
+                                                 class="btn btn-secondary" style="padding: 10px 20px; font-size: 0.85em;">
+                                           Login to unlock
+                                         </button>
+                                       </div>`
+                                    : entry.content.split('\n\n').map(p => `<p style="margin-bottom: 15px;">${p}</p>`).join('')
+                                }
+                            </div>
+                        </article>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Error loading entries:', error);
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">Failed to load entries. Try refreshing.</p>';
             }
-        });
+        }
 
         // Custom Cursor
         const cursorDot = document.querySelector('.cursor-dot');
