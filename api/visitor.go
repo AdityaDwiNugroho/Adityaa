@@ -1,31 +1,29 @@
 package api
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/redis/go-redis/v9"
 )
+
+var ctx = context.Background()
 
 func Visitor(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "text/html")
 	
-	kvURL := os.Getenv("KV_REST_API_URL")
-	kvToken := os.Getenv("KV_REST_API_TOKEN")
-	
+	redisURL := os.Getenv("REDIS_URL")
 	var count int64 = 1
 	
-	if kvURL != "" && kvToken != "" {
-		resp, err := http.Get(kvURL + "/incr/visitor_count?_token=" + kvToken)
-		if err == nil && resp.StatusCode == 200 {
-			defer resp.Body.Close()
-			var result struct {
-				Result int64 `json:"result"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err == nil {
-				count = result.Result
-			}
+	if redisURL != "" {
+		opt, err := redis.ParseURL(redisURL)
+		if err == nil {
+			rdb := redis.NewClient(opt)
+			count, _ = rdb.Incr(ctx, "visitor_count").Result()
+			rdb.Close()
 		}
 	}
 	
