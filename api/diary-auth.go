@@ -9,8 +9,6 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-var ctx = context.Background()
-
 type LoginRequest struct {
 	Password string `json:"password"`
 }
@@ -21,6 +19,7 @@ type LoginResponse struct {
 }
 
 func DiaryAuth(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	
