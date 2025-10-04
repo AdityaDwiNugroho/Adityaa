@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/:path(.*\\.(jpg|jpeg|png|gif|webp|svg))",
+      "source": "/(.*).(?:jpg|jpeg|png|gif|webp|svg)",
       "headers": [
         {
           "key": "X-Content-Type-Options",
