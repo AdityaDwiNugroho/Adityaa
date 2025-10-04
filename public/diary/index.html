@@ -100,23 +100,41 @@
     </footer>
 
     <script>
-        const DIARY_PASSWORD = 'aditya2025';
-
-        function checkPassword(e) {
+        async function checkPassword(e) {
             e.preventDefault();
             const input = document.getElementById('diary-password');
             const error = document.getElementById('error-msg');
+            const button = e.target.querySelector('button');
             
-            if (input.value === DIARY_PASSWORD) {
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('diary-entries').style.display = 'block';
-                sessionStorage.setItem('diaryAuth', 'true');
-                error.style.display = 'none';
-            } else {
+            button.disabled = true;
+            button.textContent = 'Checking...';
+            
+            try {
+                const response = await fetch('/api/diary-auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: input.value })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('login-form').style.display = 'none';
+                    document.getElementById('diary-entries').style.display = 'block';
+                    sessionStorage.setItem('diaryAuth', 'true');
+                    error.style.display = 'none';
+                } else {
+                    error.style.display = 'block';
+                    input.value = '';
+                    input.focus();
+                }
+            } catch (err) {
+                error.textContent = 'Connection error';
                 error.style.display = 'block';
-                input.value = '';
-                input.focus();
             }
+            
+            button.disabled = false;
+            button.textContent = 'Unlock Diary';
         }
 
         function logout() {
